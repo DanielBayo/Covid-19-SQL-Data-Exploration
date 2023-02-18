@@ -164,14 +164,21 @@ on dea.location=vac.location
 and dea.date=vac.date
 where dea.continent is not null and vac.new_vaccinations is not null
 order by 1,2,3
+```
 
 
---USE CTE
+### USE CTE
+```sql
 with popvsvac (continent,location,date,population,new_vaccinations,Cummvac)
 as
 (
-select dea.continent,dea.location,dea.date,dea.population,vac.new_vaccinations
-,sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location,dea.date) as CummVac
+select 
+dea.continent,
+dea.location,
+dea.date,
+dea.population,
+vac.new_vaccinations,
+sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location,dea.date) as CummVac
 from portfolioproject..CovidDeaths dea
 join portfolioproject..Covidvaccination vac
 on dea.location=vac.location
@@ -179,12 +186,15 @@ and dea.date=vac.date
 where dea.continent is not null and vac.new_vaccinations is not null
 --order by 2,3
 )
-select *,round((Cummvac/population)*100,2)as PercentVaccinated
+select *,
+round((Cummvac/population)*100,2)as PercentVaccinated
 from popvsvac
 --where location like '%Nigeria%'
+```
 
 
---TEMP TABLE
+## TEMP TABLE
+```sql
 Drop table if exists #percentvac
 create table #Percentvac
 (
@@ -196,28 +206,44 @@ new_vaccinations numeric,
 Cummvac numeric
 )
 insert into #Percentvac
-select dea.continent,dea.location,dea.date,dea.population,vac.new_vaccinations
-,sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location,dea.date) as CummVac
+select 
+dea.continent,
+dea.location,
+dea.date,
+dea.population,
+vac.new_vaccinations,
+sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location,dea.date) as CummVac
 from portfolioproject..CovidDeaths dea
 join portfolioproject..Covidvaccination vac
-on dea.location=vac.location
-and dea.date=vac.date
+on dea.location=vac.location and dea.date=vac.date
 where dea.continent is not null and vac.new_vaccinations is not null
 --order by 2,3
-select *,round((Cummvac/population)*100,2)as PercentVaccinated
+select *,
+round((Cummvac/population)*100,2)as PercentVaccinated
 from #Percentvac
+```
 
---creating view to store data for later vizualizations
-drop view if exists Percentagepopulationvaccinated
+### creating view to store data for later vizualizations
+```sql
+Drop view if exists Percentagepopulationvaccinated
 create view Percentagepopulationvaccinated as
-select dea.continent,dea.location,dea.date,dea.population,vac.new_vaccinations
-,sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location,dea.date) as CummVac
+select 
+dea.continent,
+dea.location,
+dea.date,
+dea.population,
+vac.new_vaccinations,
+sum(cast(vac.new_vaccinations as int)) over (partition by dea.location order by dea.location,dea.date) as CummVac
 from portfolioproject..CovidDeaths dea
 join portfolioproject..Covidvaccination vac
 on dea.location=vac.location
 and dea.date=vac.date
 where dea.continent is not null and vac.new_vaccinations is not null
 --order by 2,3
+```
 
+### Percentage of Population that has been vaccinated
+```sql
 select *
 from Percentagepopulationvaccinated
+```
