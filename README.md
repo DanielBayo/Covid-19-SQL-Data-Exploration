@@ -1,4 +1,6 @@
 # COVID-19 SQL DATA EXPLORATION
+
+<img alt="Corona Virus" src="coronavirus-1920x1090.jpg" width="70%" />
 This is an exploratory analysis of Covid-19 Data, in this analysis, I will try to answer some questions related to the Covid-19 in Nigeria. Some of the questions we will try to answer are:
 
 1. What are the total Covid-19 Cases, New Cases, total Death and the population of each Country and daily?
